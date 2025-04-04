@@ -109,9 +109,6 @@ function FileUploadScreen() {
 
 	return (
 		<View style={styles.container}>
-			<Text style={{ color: colors.text, fontWeight: "600" }}>
-				Doruk
-			</Text>
 			<Image source={logo} />
 			<Seperator strokeWidth={2.2} color={colors.border} />
 			<Pressable
