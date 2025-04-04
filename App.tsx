@@ -12,19 +12,18 @@ import LightTheme from "./src/themes/LightTheme";
 import "./i18n";
 import { ShareIntentProvider } from "expo-share-intent";
 import OnBoardDialog from "./src/components/OnBoardModal";
-import React, {useEffect, useState} from 'react';
-import {View, Text, Alert, BackHandler} from 'react-native';
+import React, {useEffect} from 'react';
+//import {View, Text, Alert, BackHandler} from 'react-native';
 // import CodePush from '@chlee1001/react-native-code-push';
-import {version as currentVersion} from './package.json';
+
 import CodePush from '@chlee1001/react-native-code-push';
-import Snackbar from './src/components/common/snackbar';
+
 const Stack = createNativeStackNavigator();
 
 function App() {
 	const { colors } = useTheme();
 	const { theme } = useSettingsModalStore();
 	const defaultColorScheme = useColorScheme();
-	const [snackbarVisible, setSnackbarVisible] = useState(true);
 	I18nManager.allowRTL(false);
 	I18nManager.forceRTL(false);
 
@@ -75,15 +74,6 @@ function App() {
 						}}
 						name="Upload file"
 						component={FileUploadScreen}
-					/>
-					<Snackbar
-						visible={snackbarVisible}
-						message="The app has been updated. Please restart to apply changes."
-						onDismiss={() => setSnackbarVisible(false)}
-						actionLabel="Restart"
-						onActionPress={() => CodePush.restartApp()}
-						autoHide={false}
-						swipeToDismiss
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>

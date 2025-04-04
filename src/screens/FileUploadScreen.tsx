@@ -2,13 +2,15 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { useShareIntentContext } from "expo-share-intent";
-import { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { G, Path, Svg } from "react-native-svg";
 import Seperator from "../components/Seperator";
 import { useFilePathStore } from "../stores/filePathStore";
-
+import CodePush from "@chlee1001/react-native-code-push";
+//import {version as currentVersion} from './package.json';
+import Snackbar from './src/components/common/snackbar';
 const WHITELISTED_FOLDERS = ["WebView", "image_cache", "http-cache"];
 
 const logo = require("../assets/appIcon.png");
@@ -19,7 +21,7 @@ function FileUploadScreen() {
 	const navigation = useNavigation();
 	const { setInputFile } = useFilePathStore();
 	const { hasShareIntent, shareIntent, isReady } = useShareIntentContext();
-
+	const [snackbarVisible, setSnackbarVisible] = useState(true);
 	useEffect(() => {
 		async function getShareIntentFile() {
 			if (hasShareIntent && shareIntent.files && isReady) {
@@ -108,6 +110,15 @@ function FileUploadScreen() {
 					{t("uploadPage.uploadFileLabel")}
 				</Text>
 			</Pressable>
+			<Snackbar
+				visible={snackbarVisible}
+				message="The app has been updated. Please restart to apply changes."
+				onDismiss={() => setSnackbarVisible(false)}
+				actionLabel="Restart"
+				onActionPress={() => CodePush.restartApp()}
+				autoHide={false}
+				swipeToDismiss
+			/>
 		</View>
 	);
 }
