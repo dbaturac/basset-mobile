@@ -14,7 +14,7 @@ import com.facebook.soloader.SoLoader
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
-
+import com.microsoft.codepush.react.CodePush
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost = ReactNativeHostWrapper(
@@ -32,6 +32,10 @@ class MainApplication : Application(), ReactApplication {
 
           override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
           override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+
+          override fun getJSBundleFile(): String {
+            return CodePush.getJSBundleFile()
+          }
       }
   )
 

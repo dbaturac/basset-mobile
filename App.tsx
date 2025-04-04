@@ -12,13 +12,19 @@ import LightTheme from "./src/themes/LightTheme";
 import "./i18n";
 import { ShareIntentProvider } from "expo-share-intent";
 import OnBoardDialog from "./src/components/OnBoardModal";
-
+import React, {useEffect, useState} from 'react';
+import {View, Text, Alert, BackHandler} from 'react-native';
+// import CodePush from '@chlee1001/react-native-code-push';
+import {version as currentVersion} from './package.json';
+import CodePush from '@chlee1001/react-native-code-push';
+import Snackbar from './src/components/common/snackbar';
 const Stack = createNativeStackNavigator();
 
 function App() {
 	const { colors } = useTheme();
 	const { theme } = useSettingsModalStore();
 	const defaultColorScheme = useColorScheme();
+	const [snackbarVisible, setSnackbarVisible] = useState(true);
 	I18nManager.allowRTL(false);
 	I18nManager.forceRTL(false);
 
@@ -29,6 +35,20 @@ function App() {
 		theme === "dark" ? DarkTheme : theme === "light" ? LightTheme : DarkTheme;
 
 	const appTheme = theme === "system" ? systemColorSheme : customTheme;
+
+	useEffect(() => {
+		CodePush.sync(
+			{
+				installMode: CodePush.InstallMode.ON_NEXT_RESTART,
+			},
+			(syncStatus) => {
+				// Güncelleme yüklendiyse snackbar'ı göster
+				if (syncStatus === CodePush.SyncStatus.UPDATE_INSTALLED) {
+					setSnackbarVisible(true);
+				}
+			}
+		);
+	}, []);
 	return (
 		<ShareIntentProvider>
 			<NavigationContainer theme={appTheme}>
@@ -56,13 +76,22 @@ function App() {
 						name="Upload file"
 						component={FileUploadScreen}
 					/>
+					<Snackbar
+						visible={snackbarVisible}
+						message="The app has been updated. Please restart to apply changes."
+						onDismiss={() => setSnackbarVisible(false)}
+						actionLabel="Restart"
+						onActionPress={() => CodePush.restartApp()}
+						autoHide={false}
+						swipeToDismiss
+					/>
 				</Stack.Navigator>
 			</NavigationContainer>
 		</ShareIntentProvider>
 	);
 }
 
-export default App;
+export default CodePush({checkFrequency: CodePush.CheckFrequency.MANUAL})(App);
 
 function ThemedStatusBar() {
 	const { dark } = useTheme();
