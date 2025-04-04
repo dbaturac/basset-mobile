@@ -8,12 +8,12 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { G, Path, Svg } from "react-native-svg";
 import Seperator from "../components/Seperator";
 import { useFilePathStore } from "../stores/filePathStore";
-import CodePush from "@chlee1001/react-native-code-push";
 //import {version as currentVersion} from './package.json';
-import Snackbar from './src/components/common/snackbar';
+import Snackbar from '../components/common/snackbar';
 const WHITELISTED_FOLDERS = ["WebView", "image_cache", "http-cache"];
 
 const logo = require("../assets/appIcon.png");
+import CodePush from '@chlee1001/react-native-code-push';
 
 function FileUploadScreen() {
 	const { t } = useTranslation();
@@ -22,6 +22,20 @@ function FileUploadScreen() {
 	const { setInputFile } = useFilePathStore();
 	const { hasShareIntent, shareIntent, isReady } = useShareIntentContext();
 	const [snackbarVisible, setSnackbarVisible] = useState(true);
+
+	useEffect(() => {
+		CodePush.sync(
+			{
+				installMode: CodePush.InstallMode.ON_NEXT_RESTART,
+			},
+			(syncStatus) => {
+				// Güncelleme yüklendiyse snackbar'ı göster
+				if (syncStatus === CodePush.SyncStatus.UPDATE_INSTALLED) {
+					setSnackbarVisible(true);
+				}
+			}
+		);
+	}, []);
 	useEffect(() => {
 		async function getShareIntentFile() {
 			if (hasShareIntent && shareIntent.files && isReady) {

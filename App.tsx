@@ -12,11 +12,10 @@ import LightTheme from "./src/themes/LightTheme";
 import "./i18n";
 import { ShareIntentProvider } from "expo-share-intent";
 import OnBoardDialog from "./src/components/OnBoardModal";
-import React, {useEffect} from 'react';
+import CodePush from '@chlee1001/react-native-code-push';
 //import {View, Text, Alert, BackHandler} from 'react-native';
 // import CodePush from '@chlee1001/react-native-code-push';
 
-import CodePush from '@chlee1001/react-native-code-push';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,19 +34,6 @@ function App() {
 
 	const appTheme = theme === "system" ? systemColorSheme : customTheme;
 
-	useEffect(() => {
-		CodePush.sync(
-			{
-				installMode: CodePush.InstallMode.ON_NEXT_RESTART,
-			},
-			(syncStatus) => {
-				// Güncelleme yüklendiyse snackbar'ı göster
-				if (syncStatus === CodePush.SyncStatus.UPDATE_INSTALLED) {
-					setSnackbarVisible(true);
-				}
-			}
-		);
-	}, []);
 	return (
 		<ShareIntentProvider>
 			<NavigationContainer theme={appTheme}>
